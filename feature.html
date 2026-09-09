@@ -121,12 +121,80 @@
           </p>
 </div>
 
-<!-- Tally embed — single submit, no redirect. Responses land in tally.so dashboard. -->
-
-<!-- Form (Tally inline embed) -->
-<div class="rounded-xl overflow-hidden">
-<iframe data-tally-src="https://tally.so/embed/dWM1ro?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1" loading="lazy" width="100%" height="800" frameborder="0" marginheight="0" marginwidth="0" title="Aoo feature request"></iframe>
+<!-- Form Elements -->
+<form class="space-y-5" id="feature-form" onsubmit="event.preventDefault(); handleFeatureSubmit();">
+<!-- Field 1: Type of request -->
+<div data-purpose="form-field-group">
+<label class="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-2" for="request-type">
+              Type of request <span class="text-indigo-400 font-bold"></span>
+</label>
+<div class="relative">
+<select class="form-input-dark w-full px-4 py-3 rounded-xl text-sm appearance-none cursor-pointer focus:ring-0" id="request-type" name="request-type" required="">
+<option class="bg-gray-900 text-gray-500" disabled="" selected="" value="">Select category...</option>
+<option class="bg-gray-900 text-white" value="expense-management">Expense &amp; Bill Management</option>
+<option class="bg-gray-900 text-white" value="virtual-cards">Corporate &amp; Virtual Cards</option>
+<option class="bg-gray-900 text-white" value="team-permissions">Team Roles &amp; Multi-user Approval</option>
+<option class="bg-gray-900 text-white" value="integrations">Accounting &amp; ERP Integrations</option>
+<option class="bg-gray-900 text-white" value="other">Other Suggestion</option>
+</select>
+<div class="absolute inset-y-0 right-0 flex items-center pr-3.5 pointer-events-none text-gray-400">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
 </div>
+</div>
+</div>
+<!-- Field 2: Your request (in short) -->
+<div data-purpose="form-field-group">
+<label class="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-2" for="request-short">
+              Your request (in short) <span class="text-indigo-400 font-bold"></span>
+</label>
+<input class="form-input-dark w-full px-4 py-3 rounded-xl text-sm placeholder-gray-500" id="request-short" name="request-short" placeholder="e.g., Automated notifications when my balance goes negative" required="" type="text">
+</div>
+<!-- Field 3: Please elaborate on your request -->
+<div data-purpose="form-field-group">
+<label class="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-2" for="request-details">
+              Please elaborate on your request <span class="text-indigo-400 font-bold"></span>
+</label>
+<textarea class="form-input-dark w-full px-4 py-3 rounded-xl text-sm placeholder-gray-500 resize-y" id="request-details" name="request-details" placeholder="Describe how you envision this feature working in Aoo..." required="" rows="4"></textarea>
+</div>
+<!-- Field 4: Any screenshots you'd like to add? -->
+<div data-purpose="form-field-group">
+<label class="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-2">
+              Any screenshots you'd like to add?
+            </label>
+<label class="flex flex-col items-center justify-center px-4 py-5 border border-dashed border-white/20 rounded-xl cursor-pointer hover:border-white/40 hover:bg-white/[0.02] transition-colors group" for="file-upload">
+<div class="flex items-center gap-2.5 text-xs text-gray-400 group-hover:text-gray-200 transition-colors">
+<svg class="w-4 h-4 text-gray-400 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span class="" id="file-label">Click to choose a file or drag here</span>
+</div>
+<span class="text-[11px] text-gray-500 mt-1">PNG, JPG, or PDF up to 10MB — attach it in the confirmation popup</span>
+<input accept="image/*,.pdf" class="sr-only" id="file-upload" name="file-upload" type="file">
+</label>
+</div>
+<!-- Field 5: Your email -->
+<div data-purpose="form-field-group">
+<label class="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-2" for="request-email">
+              Your email <span class="text-indigo-400 font-bold"></span>
+</label>
+<input class="form-input-dark w-full px-4 py-3 rounded-xl text-sm placeholder-gray-500" id="request-email" name="request-email" placeholder="founder@company.com" required="" type="email">
+<p class="text-[12px] text-gray-400 mt-1.5 tracking-tight font-normal">
+              (So we can notify you once the feature is live)
+            </p>
+</div>
+<!-- Form Submit Button -->
+<div class="pt-2">
+<button id="feature-submit-btn" class="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-sm font-semibold text-white bg-[#5e3bee] hover:bg-[#502fe0] shadow-lg shadow-[#5e3bee]/30 hover:shadow-[#5e3bee]/50 transition-all duration-200 active:scale-[0.99] cursor-pointer" type="submit">
+<span class="">Submit Request</span>
+<svg class="w-4 h-4 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</div>
+<p id="feature-feedback" class="hidden text-xs text-center text-emerald-400 pt-1">Thank you! Your request has been noted.</p>
+</form>
 
 </div>
 </div>
@@ -142,5 +210,53 @@
 </footer>
 <!-- END: PageFooter -->
 <script src="https://tally.so/widgets/embed.js"></script>
+<script>
+  var fileInput = document.getElementById('file-upload');
+  var fileLabel = document.getElementById('file-label');
+  if (fileInput && fileLabel) {
+    fileInput.addEventListener('change', function () {
+      if (fileInput.files && fileInput.files.length > 0) {
+        fileLabel.textContent = fileInput.files[0].name;
+      }
+    });
+  }
+
+  // Feature submit -> Tally modal popup on the SAME page (no redirect, no new tab).
+  // Text answers are passed as hidden fields (see README "Tally hidden fields").
+  // Screenshots can't be passed along, so they get attached in the popup.
+  function handleFeatureSubmit() {
+    var form = document.getElementById('feature-form');
+    if (!form.checkValidity()) { form.reportValidity(); return; }
+    var payload = {
+      type: document.getElementById('request-type').value,
+      short: document.getElementById('request-short').value.trim(),
+      details: document.getElementById('request-details').value.trim(),
+      email: document.getElementById('request-email').value.trim()
+    };
+    if (window.Tally && Tally.openPopup) {
+      Tally.openPopup('dWM1ro', {
+        layout: 'modal',
+        width: 600,
+        overlay: true,
+        hideTitle: true,
+        hiddenFields: payload,
+        autoClose: 3000,
+        onSubmit: function () { markReceived(); }
+      });
+    } else {
+      // Fallback if the Tally script is blocked: open the form directly.
+      window.open('https://tally.so/r/dWM1ro', '_blank', 'noopener');
+    }
+  }
+
+  function markReceived() {
+    var btn = document.getElementById('feature-submit-btn');
+    var fb = document.getElementById('feature-feedback');
+    btn.disabled = true;
+    btn.classList.add('opacity-75', 'cursor-not-allowed');
+    btn.querySelector('span').textContent = 'Request received!';
+    fb.classList.remove('hidden');
+  }
+</script>
 </body>
 </html>

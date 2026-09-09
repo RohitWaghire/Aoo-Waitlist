@@ -116,14 +116,28 @@
       </p>
 </div>
 <!-- END: Copy & Lead Section -->
-<!-- BEGIN: Waitlist Form (Tally embed — single submit, no redirect) -->
+<!-- BEGIN: Waitlist Form -->
 <section aria-label="Waitlist Signup" class="mt-8 sm:mt-9 w-full max-w-[340px] sm:max-w-[370px]">
-<div class="flex flex-col gap-3">
-<div class="rounded-xl overflow-hidden">
-<iframe data-tally-src="https://tally.so/embed/xXq1G5?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1" loading="lazy" width="100%" height="220" frameborder="0" marginheight="0" marginwidth="0" title="Aoo waitlist signup"></iframe>
+<form class="flex flex-col gap-3" id="waitlist-form" onsubmit="event.preventDefault(); handleSubmit();">
+<!-- Email Input Container -->
+<div class="relative w-full">
+<input aria-label="Email Address" class="w-full px-4 py-3 bg-[#1e2025]/80 border border-neutral-700/70 focus:border-indigo-400/80 focus:bg-[#23262d] focus:ring-2 focus:ring-indigo-500/20 text-sm text-neutral-100 placeholder:text-neutral-500 rounded-xl transition outline-none" id="email" placeholder="Your email" required="" type="email">
+<!-- Required Asterisk indicator from reference design -->
+<span aria-hidden="true" class="absolute right-3 top-2.5 text-[10px] text-neutral-400 font-sans select-none"></span>
 </div>
+<!-- Submit Button -->
+<button class="w-full py-3 px-5 bg-[#5337e8] hover:bg-[#442bc7] active:scale-[0.99] text-white text-sm font-medium rounded-xl transition-all duration-150 flex items-center justify-center gap-2 shadow-[0_4px_24px_rgba(83,55,232,0.35)] focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 focus:ring-offset-[#111215]" id="submit-btn" type="submit">
+<span class="">Join our waitlist</span>
+<svg class="w-4 h-4 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
 <a class="w-full py-2.5 px-4 bg-white/[0.04] hover:bg-white/[0.08] active:scale-[0.99] text-neutral-300 hover:text-white text-xs font-medium rounded-xl border border-white/10 transition-all duration-150 flex items-center justify-center gap-2 backdrop-blur-md focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-mint" href="feature.html"><span class="">Request a Feature</span><svg class="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></a>
-</div>
+<!-- Feedback message container -->
+<p class="text-xs text-center text-emerald-400 hidden pt-1" id="form-feedback">
+          Thank you! You have been granted early priority access.
+        </p>
+</form>
 </section>
 <!-- END: Waitlist Form -->
 </main>
@@ -142,6 +156,39 @@
 <script data-purpose="form-and-runtime">
     // Set dynamic current year
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Waitlist submit -> Tally modal popup on the SAME page (no redirect, no new tab).
+    // The typed email is passed as a hidden field (see README "Tally hidden fields").
+    function handleSubmit() {
+      var input = document.getElementById('email');
+      if (!input.checkValidity()) { input.reportValidity(); return; }
+      var email = input.value.trim();
+      if (window.Tally && Tally.openPopup) {
+        Tally.openPopup('xXq1G5', {
+          layout: 'modal',
+          width: 500,
+          overlay: true,
+          hideTitle: true,
+          hiddenFields: { email: email },
+          autoClose: 2000,
+          onSubmit: function () { markJoined(); }
+        });
+      } else {
+        // Fallback if the Tally script is blocked: open the form directly.
+        window.open('https://tally.so/r/xXq1G5', '_blank', 'noopener');
+      }
+    }
+
+    function markJoined() {
+      var input = document.getElementById('email');
+      var btn = document.getElementById('submit-btn');
+      var fb = document.getElementById('form-feedback');
+      btn.disabled = true;
+      btn.classList.add('opacity-75', 'cursor-not-allowed');
+      btn.innerHTML = 'Added to priority queue!';
+      fb.classList.remove('hidden');
+      input.disabled = true;
+    }
   </script>
 <!-- END: Client Interactivity Script -->
 </body>

@@ -6,15 +6,26 @@ Live site (GitHub Pages): `https://rohitwaghire.github.io/Aoo-Waitlist/`
 - `feature.html` — feature request form
 - `assets/` — local logo / icon (migrated off temporary Stitch URLs)
 
-## Connect tally.so (to collect data)
+## How data collection works
 
-1. Create 2 forms at https://tally.so:
-   - **Aoo Waitlist**: 1 Email field.
-   - **Aoo Feature Request**: Type (dropdown), Short title, Details, Screenshots (file), Email.
-2. Copy each Share link, e.g. `https://tally.so/r/XXXXXX`.
-3. Paste them:
-   - `index.html` → `const TALLY_WAITLIST_URL = "https://tally.so/r/..."`.
-   - `feature.html` → `const TALLY_FEATURE_URL = "https://tally.so/r/..."`.
-4. Commit + push. Submit on the site opens Tally pre-filled so responses land in Tally dashboard (CSV / Sheets / Notion / email notifications).
+Both pages keep the custom Stitch design. On submit they open the Tally form
+as a **modal popup on the same page** (official `Tally.openPopup`, no redirect,
+no new tab) with the typed answers pre-passed, so the visitor just confirms.
+Responses land in the Tally dashboard (CSV / Sheets / Notion / notifications).
 
-Full inline embed alternative is commented inside both HTML files.
+## Tally hidden fields (one-time setup, ~2 min — enables prefill)
+
+Without this, the popup opens with empty fields; with it, answers arrive prefilled.
+
+**Aoo Waitlist** (`xXq1G5`):
+1. Open the form in Tally > add a **Hidden fields** block, name it exactly `email`.
+2. Open the email question > **Default answer** > type `@` and pick the hidden `email` field.
+
+**Aoo Feature Request** (`dWM1ro`):
+1. Add **Hidden fields** named exactly: `type`, `short`, `details`, `email`.
+2. For each visible question, set its **Default answer** (`@` mention) to the
+   matching hidden field. (Screenshots can't be prefilled — visitors attach
+   them in the popup.)
+
+Hidden-field names are case-sensitive and must match the `hiddenFields` keys
+in `index.html` / `feature.html`.
