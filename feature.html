@@ -53,10 +53,19 @@
 
     /* Custom input focus states */
     .form-input-dark {
-      background-color: rgba(26, 27, 33, 0.7);
+      background-color: rgba(26, 27, 33, 0.7) !important;
       border: 1px solid rgba(255, 255, 255, 0.1);
-      color: #f3f4f6;
+      color: #f3f4f6 !important;
+      -webkit-text-fill-color: #f3f4f6 !important;
+      color-scheme: dark;
       transition: all 0.2s ease-in-out;
+    }
+    input.form-input-dark,
+    textarea.form-input-dark,
+    select.form-input-dark {
+      background: rgba(26, 27, 33, 0.7) !important;
+      color: #f3f4f6 !important;
+      -webkit-text-fill-color: #f3f4f6 !important;
     }
     .form-input-dark:focus {
       background-color: rgba(30, 32, 40, 0.95);
@@ -72,6 +81,12 @@
       -webkit-text-fill-color: #f3f4f6 !important;
       -webkit-box-shadow: 0 0 0 1000px rgba(26, 27, 33, 0.95) inset !important;
       caret-color: #f3f4f6;
+    }
+    input.form-input-dark::placeholder,
+    textarea.form-input-dark::placeholder {
+      color: #6b7280 !important;
+      -webkit-text-fill-color: #6b7280 !important;
+      opacity: 1;
     }
     /* Kill Tailwind forms-plugin native select arrow (we use our own SVG) */
     select.form-input-dark {
