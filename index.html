@@ -116,44 +116,14 @@
       </p>
 </div>
 <!-- END: Copy & Lead Section -->
-<!-- BEGIN: Waitlist Form -->
+<!-- BEGIN: Waitlist Form (Tally embed — single submit, no redirect) -->
 <section aria-label="Waitlist Signup" class="mt-8 sm:mt-9 w-full max-w-[340px] sm:max-w-[370px]">
-<form class="flex flex-col gap-3" id="waitlist-form" onsubmit="event.preventDefault(); handleSubmit();">
-<!-- Email Input Container -->
-<div class="relative w-full">
-<input aria-label="Email Address" class="w-full px-4 py-3 bg-[#1e2025]/80 border border-neutral-700/70 focus:border-indigo-400/80 focus:bg-[#23262d] focus:ring-2 focus:ring-indigo-500/20 text-sm text-neutral-100 placeholder:text-neutral-500 rounded-xl transition outline-none" id="email" placeholder="Your email" required="" type="email">
-<!-- Required Asterisk indicator from reference design -->
-<span aria-hidden="true" class="absolute right-3 top-2.5 text-[10px] text-neutral-400 font-sans select-none"></span>
+<div class="flex flex-col gap-3">
+<div class="rounded-xl overflow-hidden">
+<iframe data-tally-src="https://tally.so/embed/xXq1G5?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1" loading="lazy" width="100%" height="220" frameborder="0" marginheight="0" marginwidth="0" title="Aoo waitlist signup"></iframe>
 </div>
-<!-- Submit Button -->
-<button class="w-full py-3 px-5 bg-[#5337e8] hover:bg-[#442bc7] active:scale-[0.99] text-white text-sm font-medium rounded-xl transition-all duration-150 flex items-center justify-center gap-2 shadow-[0_4px_24px_rgba(83,55,232,0.35)] focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 focus:ring-offset-[#111215]" id="submit-btn" type="submit">
-<span class="">Join our waitlist</span>
-<svg class="w-4 h-4 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-<path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
-</svg>
-</button>
 <a class="w-full py-2.5 px-4 bg-white/[0.04] hover:bg-white/[0.08] active:scale-[0.99] text-neutral-300 hover:text-white text-xs font-medium rounded-xl border border-white/10 transition-all duration-150 flex items-center justify-center gap-2 backdrop-blur-md focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-mint" href="feature.html"><span class="">Request a Feature</span><svg class="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></a>
-<!-- Feedback message container -->
-<p class="text-xs text-center text-emerald-400 hidden pt-1" id="form-feedback">
-          Thank you! You have been granted early priority access.
-        </p>
-<p class="text-xs text-center hidden pt-1" id="tally-cta-wrap">
-<a id="tally-cta" href="#" target="_blank" rel="noopener" class="underline text-indigo-300 hover:text-indigo-200">Complete your signup in our secure form &rarr;</a>
-</p>
-</form>
-
-<!-- ============================================================
-  TALLY.SO — WAITLIST INTEGRATION
-  1. Create a Tally form with an Email field (tally.so > New form).
-  2. Share > Copy link, e.g. https://tally.so/r/XXXXXX
-  3. Paste it below as tallyWaitlistUrl.
-  4. On submit the site opens Tally pre-filled with ?email=...
-     so the address is stored in Tally Responses (CSV / Sheets / Notion).
-  ALTERNATIVE (inline embed, replaces custom input):
-    <iframe data-tally-src="https://tally.so/embed/XXXXXX?transparentBackground=1&hideTitle=1"
-      width="100%" height="200" frameborder="0" title="Aoo waitlist"></iframe>
-    <script src="https://tally.so/widgets/embed.js"><\/script>
-============================================================ -->
+</div>
 </section>
 <!-- END: Waitlist Form -->
 </main>
@@ -168,39 +138,10 @@
 </footer>
 <!-- END: Minimal Footer -->
 <!-- BEGIN: Client Interactivity Script -->
+<script src="https://tally.so/widgets/embed.js"></script>
 <script data-purpose="form-and-runtime">
-    // === AOO CONFIG: paste your Tally.so waitlist URL here ===
-    const TALLY_WAITLIST_URL = "https://tally.so/r/xXq1G5";
-
     // Set dynamic current year
     document.getElementById('year').textContent = new Date().getFullYear();
-
-    // Feedback response on waitlist submission (+ optional Tally handoff)
-    function handleSubmit() {
-      const emailInput = document.getElementById('email');
-      const submitBtn = document.getElementById('submit-btn');
-      const feedback = document.getElementById('form-feedback');
-      const tallyWrap = document.getElementById('tally-cta-wrap');
-      const tallyCta = document.getElementById('tally-cta');
-
-      if (emailInput && emailInput.value && emailInput.checkValidity()) {
-        const email = emailInput.value.trim();
-        if (TALLY_WAITLIST_URL) {
-          const prefill = TALLY_WAITLIST_URL + "?email=" + encodeURIComponent(email);
-          tallyCta.href = prefill;
-          tallyWrap.classList.remove('hidden');
-          // Open Tally in a new tab so the address is captured there too.
-          window.open(prefill, "_blank", "noopener");
-        }
-        submitBtn.disabled = true;
-        submitBtn.classList.add('opacity-75', 'cursor-not-allowed');
-        submitBtn.innerHTML = 'Added to priority queue!';
-        feedback.classList.remove('hidden');
-        emailInput.disabled = true;
-      } else if (emailInput) {
-        emailInput.reportValidity();
-      }
-    }
   </script>
 <!-- END: Client Interactivity Script -->
 </body>
