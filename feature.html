@@ -123,6 +123,9 @@
 
 <!-- Form Elements -->
 <form class="space-y-5" id="feature-form" onsubmit="event.preventDefault(); handleFeatureSubmit();">
+<!-- SubmitKit spam protection -->
+<input type="hidden" name="_honeypot" value="">
+<input type="hidden" name="_timestamp" id="fts" value="">
 <!-- Field 1: Type of request -->
 <div data-purpose="form-field-group">
 <label class="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-2" for="request-type">
@@ -170,7 +173,7 @@
 </svg>
 <span class="" id="file-label">Click to choose a file or drag here</span>
 </div>
-<span class="text-[11px] text-gray-500 mt-1">PNG, JPG, or PDF up to 10MB — attach it in the confirmation popup</span>
+<span class="text-[11px] text-gray-500 mt-1">PNG, JPG, or PDF up to 5MB</span>
 <input accept="image/*,.pdf" class="sr-only" id="file-upload" name="file-upload" type="file">
 </label>
 </div>
@@ -194,6 +197,7 @@
 </button>
 </div>
 <p id="feature-feedback" class="hidden text-xs text-center text-emerald-400 pt-1">Thank you! Your request has been noted.</p>
+<p id="feature-error" class="hidden text-xs text-center text-red-400 pt-1">Something went wrong. Please try again.</p>
 </form>
 
 </div>
@@ -209,10 +213,16 @@
 </div>
 </footer>
 <!-- END: PageFooter -->
-<script src="https://tally.so/widgets/embed.js"></script>
 <script>
+  // === SUBMITKIT CONFIG: paste your feature-request endpoint here ===
+  // SubmitKit dashboard > New form > copy endpoint, e.g. "https://submitkit.dev/api/f/abc123"
+  var SUBMITKIT_FEATURE_URL = "";
+
+  var MAX_FILE_BYTES = 5 * 1024 * 1024; // SubmitKit free plan: 5 MB per file
+
   var fileInput = document.getElementById('file-upload');
   var fileLabel = document.getElementById('file-label');
+  document.getElementById('fts').value = Date.now();
   if (fileInput && fileLabel) {
     fileInput.addEventListener('change', function () {
       if (fileInput.files && fileInput.files.length > 0) {
@@ -221,41 +231,42 @@
     });
   }
 
-  // Feature submit -> Tally modal popup on the SAME page (no redirect, no new tab).
-  // Text answers are passed as hidden fields (see README "Tally hidden fields").
-  // Screenshots can't be passed along, so they get attached in the popup.
+  // Feature submit -> invisible background POST to SubmitKit (no redirect, no popup).
+  // The screenshot (if any) travels inside the same request and lands in the
+  // SubmitKit dashboard attached to the submission, with email notification.
   function handleFeatureSubmit() {
     var form = document.getElementById('feature-form');
-    if (!form.checkValidity()) { form.reportValidity(); return; }
-    var payload = {
-      type: document.getElementById('request-type').value,
-      short: document.getElementById('request-short').value.trim(),
-      details: document.getElementById('request-details').value.trim(),
-      email: document.getElementById('request-email').value.trim()
-    };
-    if (window.Tally && Tally.openPopup) {
-      Tally.openPopup('dWM1ro', {
-        layout: 'modal',
-        width: 600,
-        overlay: true,
-        hideTitle: true,
-        hiddenFields: payload,
-        autoClose: 3000,
-        onSubmit: function () { markReceived(); }
-      });
-    } else {
-      // Fallback if the Tally script is blocked: open the form directly.
-      window.open('https://tally.so/r/dWM1ro', '_blank', 'noopener');
-    }
-  }
-
-  function markReceived() {
     var btn = document.getElementById('feature-submit-btn');
     var fb = document.getElementById('feature-feedback');
+    var err = document.getElementById('feature-error');
+    if (!form.checkValidity()) { form.reportValidity(); return; }
+    if (fileInput.files.length > 0 && fileInput.files[0].size > MAX_FILE_BYTES) {
+      err.textContent = 'That file is over 5MB. Please choose a smaller file.';
+      err.classList.remove('hidden');
+      return;
+    }
+    if (!SUBMITKIT_FEATURE_URL) {
+      err.textContent = 'This form is being connected — please check back soon.';
+      err.classList.remove('hidden');
+      return;
+    }
+    err.classList.add('hidden');
     btn.disabled = true;
-    btn.classList.add('opacity-75', 'cursor-not-allowed');
-    btn.querySelector('span').textContent = 'Request received!';
-    fb.classList.remove('hidden');
+    btn.classList.add('opacity-75', 'cursor-wait');
+    fetch(SUBMITKIT_FEATURE_URL, { method: 'POST', body: new FormData(form) })
+      .then(function (res) {
+        if (!res.ok) { throw new Error('bad status ' + res.status); }
+        btn.classList.remove('cursor-wait');
+        btn.classList.add('cursor-not-allowed');
+        btn.querySelector('span').textContent = 'Request received!';
+        fb.classList.remove('hidden');
+      })
+      .catch(function () {
+        btn.disabled = false;
+        btn.classList.remove('opacity-75', 'cursor-wait');
+        err.textContent = 'Something went wrong. Please try again.';
+        err.classList.remove('hidden');
+      });
   }
 </script>
 </body>

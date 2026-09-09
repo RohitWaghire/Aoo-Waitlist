@@ -8,24 +8,25 @@ Live site (GitHub Pages): `https://rohitwaghire.github.io/Aoo-Waitlist/`
 
 ## How data collection works
 
-Both pages keep the custom Stitch design. On submit they open the Tally form
-as a **modal popup on the same page** (official `Tally.openPopup`, no redirect,
-no new tab) with the typed answers pre-passed, so the visitor just confirms.
-Responses land in the Tally dashboard (CSV / Sheets / Notion / notifications).
+Both pages keep the custom Stitch design. On submit they POST invisibly in the
+background to **SubmitKit** (`fetch`, no redirect, no popup, no new tab) and
+show the on-page success message. Screenshots ride along inside the same
+request. Everything lands in the SubmitKit dashboard + email notifications.
 
-## Tally hidden fields (one-time setup, ~2 min — enables prefill)
+## SubmitKit setup (one-time, ~2 min)
 
-Without this, the popup opens with empty fields; with it, answers arrive prefilled.
+1. Sign up at https://submitkit.dev (free: 500 submissions/mo, file uploads
+   up to 5 MB per file, max 5 files per submission).
+2. Create **two** forms (New form): one for the waitlist, one for feature
+   requests. Copy each endpoint URL (`https://submitkit.dev/api/f/...`).
+3. Paste them into the code:
+   - `index.html` → `var SUBMITKIT_WAITLIST_URL = "https://submitkit.dev/api/f/..."`.
+   - `feature.html` → `var SUBMITKIT_FEATURE_URL = "https://submitkit.dev/api/f/..."`.
+4. Commit + push. Field names arrive as-is (`email` / `request-type`,
+   `request-short`, `request-details`, `file-upload`, `request-email`).
 
-**Aoo Waitlist** (`xXq1G5`):
-1. Open the form in Tally > add a **Hidden fields** block, name it exactly `email`.
-2. Open the email question > **Default answer** > type `@` and pick the hidden `email` field.
-
-**Aoo Feature Request** (`dWM1ro`):
-1. Add **Hidden fields** named exactly: `type`, `short`, `details`, `email`.
-2. For each visible question, set its **Default answer** (`@` mention) to the
-   matching hidden field. (Screenshots can't be prefilled — visitors attach
-   them in the popup.)
-
-Hidden-field names are case-sensitive and must match the `hiddenFields` keys
-in `index.html` / `feature.html`.
+Notes:
+- The file hint on `feature.html` says "up to 5MB" to match the free plan
+  (paid plans allow 25 MB — bump `MAX_FILE_BYTES` if you upgrade).
+- Spam is handled by SubmitKit via the `_honeypot` + `_timestamp` hidden
+  fields already in both forms.
