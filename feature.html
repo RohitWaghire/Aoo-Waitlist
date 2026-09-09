@@ -253,9 +253,11 @@
     err.classList.add('hidden');
     btn.disabled = true;
     btn.classList.add('opacity-75', 'cursor-wait');
-    fetch(SUBMITKIT_FEATURE_URL, { method: 'POST', body: new FormData(form) })
-      .then(function (res) {
-        if (!res.ok) { throw new Error('bad status ' + res.status); }
+    // SubmitKit accepts the multipart POST, but its response is not exposed
+    // to a GitHub Pages origin. Treat the request as fire-and-forget so a
+    // successful dashboard entry cannot become a false browser error.
+    fetch(SUBMITKIT_FEATURE_URL, { method: 'POST', mode: 'no-cors', body: new FormData(form) })
+      .then(function () {
         btn.classList.remove('cursor-wait');
         btn.classList.add('cursor-not-allowed');
         btn.querySelector('span').textContent = 'Request received!';
