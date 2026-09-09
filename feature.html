@@ -64,6 +64,15 @@
       box-shadow: 0 0 0 3px rgba(94, 59, 238, 0.25);
       outline: none;
     }
+    /* Keep Chrome autofill from replacing the dark form surface with white. */
+    input.form-input-dark:-webkit-autofill,
+    input.form-input-dark:-webkit-autofill:hover,
+    input.form-input-dark:-webkit-autofill:focus,
+    textarea.form-input-dark:-webkit-autofill {
+      -webkit-text-fill-color: #f3f4f6 !important;
+      -webkit-box-shadow: 0 0 0 1000px rgba(26, 27, 33, 0.95) inset !important;
+      caret-color: #f3f4f6;
+    }
     /* Kill Tailwind forms-plugin native select arrow (we use our own SVG) */
     select.form-input-dark {
       background-image: none !important;
